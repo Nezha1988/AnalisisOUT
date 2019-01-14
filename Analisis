@@ -1,0 +1,829 @@
+using System;
+
+using System.Collections.Generic;
+
+using System.IO;
+
+using System.Text;
+
+
+
+namespace AnalisisOut
+
+{
+
+    class Program
+
+    {
+
+        static void Main(string[] args)
+
+        {
+
+            string carpeta = "";
+
+            string pathout = "";
+
+            string anioactual = "";
+
+            string mesactual = "";
+
+            string diaactual = "";
+
+            string linea = "";
+
+            List<byte> listaok = new List<byte>();
+
+            List<byte> lista500 = new List<byte>();
+
+            List<byte> lista69 = new List<byte>();
+
+            List<byte> lista50 = new List<byte>();
+
+            List<byte> lista38 = new List<byte>();
+
+            List<byte> lista21 = new List<byte>();
+
+            List<byte> lista262 = new List<byte>();
+
+            List<byte> modemfailure = new List<byte>();
+
+
+
+            //Determinar el path donde se encuentra el OUT
+
+            DirectoryInfo carpetasms = new DirectoryInfo(@"C:\Archivos de programa\ITCSM");
+
+
+
+            if (carpetasms.Exists == false)
+
+                carpeta = "NowSMS";
+
+            else
+
+                carpeta = "ITCSM";
+
+
+
+            DateTime anio = DateTime.Today;
+
+            anioactual = anio.Year.ToString();
+
+
+
+            DateTime mes = DateTime.Today;
+
+            mesactual = anio.Month.ToString();
+
+            if (mesactual.Length < 2)
+
+                mesactual = "0" + mesactual;
+
+
+
+            DateTime dia = DateTime.Today;
+
+            diaactual = anio.Day.ToString();
+
+            if (diaactual.Length < 2)
+
+                diaactual = "0" + diaactual;
+
+
+
+
+
+
+
+            //Ruta en string para el acceso al OUT
+
+            pathout = @"C:\Archivos de programa\" + carpeta + @"\SMSOUT-" + anioactual + mesactual + diaactual + ".log";
+
+
+
+            //Lectura de las lineas del OUT
+
+            System.IO.StreamReader agenda = new System.IO.StreamReader(pathout);
+
+            double renglon = 0;
+
+            while ((linea = agenda.ReadLine()) != null)
+
+            {
+
+                bool flag1 = true;
+
+                if (linea.Contains("+STRIL"))
+
+                {
+
+                    flag1 = false;
+
+                }
+
+
+
+                int x, z;
+
+                string y, k = "";
+
+                byte h = 0;
+
+                //linea = agenda.ReadLine();
+
+                
+
+                if (linea.Contains(",OK"))
+
+                {
+
+                    x = linea.IndexOf("COM");
+
+                    x = x + 3;
+
+                    y = linea.Substring(x, 2);
+
+                    if (y.Substring(1, 1) == ":")
+
+                    {
+
+                        y = y.Substring(0, 1);
+
+                        h = byte.Parse(y);
+
+                    }
+
+                    else
+
+                        h = byte.Parse(y);
+
+
+
+                    listaok.Add(h);
+
+
+
+                    //foreach (string dato in lista)
+
+                    //{
+
+                    //    Console.WriteLine(dato);
+
+                    //}
+
+                }
+
+
+
+                else if (linea.Contains(",Retry Pending -") & (flag1 == true))
+
+                {
+
+                    z = linea.IndexOf("+CMS");
+
+                    if (z < 0)
+
+                        z = 0;
+
+                    z = z + 5;
+
+                    k = linea.Substring(z, 10);
+
+                    if ((k.Substring(7, 3) == "500") || (k.Substring(7, 3) == "512"))
+
+                    {
+
+                        z = z + 19;
+
+                        k = linea.Substring(z, 2);
+
+                        if (k.Substring(1, 1) == ":")
+
+                        {
+
+                            k = k.Substring(0, 1);
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else if (linea.Substring(z, 2) == ":," || linea.Substring(z, 2) == ": ")
+
+                        {
+
+                            k = "0";
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else
+
+                            h = byte.Parse(k);
+
+
+
+                        lista500.Add(h);
+
+                    }
+
+
+
+                    else if (k.Substring(7, 2) == "69")
+
+                    {
+
+                        z = z + 18;
+
+                        k = linea.Substring(z, 2);
+
+                        if (k.Substring(1, 1) == ":")
+
+                        {
+
+                            k = k.Substring(0, 1);
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else if (linea.Substring(z, 2) == ":," || linea.Substring(z, 2) == ": ")
+
+                        {
+
+                            k = "0";
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else
+
+                            h = byte.Parse(k);
+
+
+
+                        lista69.Add(h);
+
+
+
+                    }
+
+
+
+                    else if (k.Substring(7, 2) == "50")
+
+                    {
+
+                        z = z + 18;
+
+                        k = linea.Substring(z, 2);
+
+                        if (k.Substring(1, 1) == ":")
+
+                        {
+
+                            k = k.Substring(0, 1);
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else if (linea.Substring(z, 2) == ":," || linea.Substring(z, 2) == ": ")
+
+                        {
+
+                            k = "0";
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else
+
+                            h = byte.Parse(k);
+
+
+
+                        lista50.Add(h);
+
+
+
+                    }
+
+
+
+                    else if (k.Substring(7, 2) == "38")
+
+                    {
+
+                        z = z + 18;
+
+                        k = linea.Substring(z, 2);
+
+                        if (k.Substring(1, 1) == ":")
+
+                        {
+
+                            k = k.Substring(0, 1);
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else
+
+                             if (linea.Substring(z, 2) == ":," || linea.Substring(z, 2) == ": ")
+
+                        {
+
+                            k = "0";
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else
+
+                            h = byte.Parse(k);
+
+
+
+                        lista38.Add(h);
+
+
+
+                    }
+
+
+
+                    else if (k.Substring(7, 2) == "21")
+
+                    {
+
+                        z = z + 18;
+
+                        k = linea.Substring(z, 2);
+
+                        if (k.Substring(1, 1) == ":")
+
+                        {
+
+                            k = k.Substring(0, 1);
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else if (linea.Substring(z, 2) == ":," || linea.Substring(z, 2) == ": ")
+
+                        {
+
+                            k = "0";
+
+                            h = byte.Parse(k);
+
+                        }
+
+                        else
+
+                            h = byte.Parse(k);
+
+
+
+                        lista21.Add(h);
+
+
+
+                    }
+
+
+
+                    else if (linea.Contains(",Retry Pending -"))
+
+                    {
+
+                        z = linea.IndexOf("+CME");
+
+                        z = z + 5;
+
+                        k = linea.Substring(z, 10);
+
+                        if (k.Substring(7, 3) == "262")
+
+                        {
+
+                            z = z + 19;
+
+                            k = linea.Substring(z, 2);
+
+                            if (k.Substring(1, 1) == ":")
+
+                            {
+
+                                k = k.Substring(0, 1);
+
+                                h = byte.Parse(k);
+
+                            }
+
+                            else if (linea.Substring(z, 2) == ":," || linea.Substring(z, 2) == ": ")
+
+                            {
+
+                                k = "0";
+
+                                h = byte.Parse(k);
+
+                            }
+
+                            else
+
+                                h = byte.Parse(k);
+
+
+
+                            lista262.Add(h);
+
+                        }
+
+
+
+                    }
+
+                }
+
+                if (linea.Contains("Modem Failure") || (linea.Contains("Unable to access modem")))
+
+                {
+
+                    x = linea.IndexOf(",Modem Failure");
+
+                    x = x - 2;
+
+                    y = linea.Substring(x, 2);
+
+                    if (y.Substring(1, 1) == ":")
+
+                    {
+
+                        y = y.Substring(0, 1);
+
+                        h = byte.Parse(y);
+
+                    }
+
+                    else
+
+                        h = byte.Parse(y);
+
+
+
+                    modemfailure.Add(h);
+
+                }
+
+
+
+                renglon++;
+
+                
+
+
+
+            }
+
+                //Escribimos el informe para los distintos errores
+
+
+
+                Console.Write("Puerto Enviados Error500/512 Error69 Error50 Error21 Error38 Error262 ModemFail");
+
+                byte fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < listaok.Count; l++)
+
+                    {
+
+                        if (listaok[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(7, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < lista500.Count; l++)
+
+                    {
+
+                        if (lista500[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(16, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < lista69.Count; l++)
+
+                    {
+
+                        if (lista69[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(29, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < lista50.Count; l++)
+
+                    {
+
+                        if (lista50[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(37, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < lista21.Count; l++)
+
+                    {
+
+                        if (lista21[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(45, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < lista38.Count; l++)
+
+                    {
+
+                        if (lista38[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(53, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < lista262.Count; l++)
+
+                    {
+
+                        if (lista262[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(61, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                fila = 1;
+
+                for (byte i = 1; i <= 96; i++)
+
+                {
+
+                    double contador = 0;
+
+                    Console.SetCursorPosition(0, fila);
+
+                    for (int l = 0; l < modemfailure.Count; l++)
+
+                    {
+
+                        if (modemfailure[l] == i)
+
+                        {
+
+                            contador++;
+
+                        }
+
+                    }
+
+
+
+                    Console.Write("COM {0}", i);
+
+                    Console.SetCursorPosition(70, fila);
+
+                    Console.Write(contador);
+
+                    fila++;
+
+                    Console.SetCursorPosition(0, 0);
+
+                }
+
+
+
+                Console.ReadLine();
+
+        }
+
+    }
+
+}
